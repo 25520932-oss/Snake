@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <ctime>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -19,6 +20,27 @@ void gotoxy(int column, int line);
 int kbhit(void);
 int getch(void);
 #endif
+
+// Hàm tạo tọa độ ngẫu nhiên cho thức ăn
+void khoiTaoThucAn(int &thucAnX, int &thucAnY) {
+    thucAnX = rand() % 40 + 5;
+    thucAnY = rand() % 15 + 5;
+}
+
+// Hàm kiểm tra rắn ăn mồi, nếu ăn thì cộng điểm và tạo mồi mới
+bool kiemTraAnMoi(int ranX, int ranY, int &thucAnX, int &thucAnY, int &diem) {
+    if (ranX == thucAnX && ranY == thucAnY) {
+        diem += 10; // Cộng 10 điểm
+        khoiTaoThucAn(thucAnX, thucAnY); // Random cục mồi mới
+        return true; // Trả về true báo hiệu đã ăn (để rắn dài ra)
+    }
+    return false; // Chưa ăn
+}
+
+// Hàm in điểm
+void inDiem(int diem) {
+    cout << "=== DIEM CUA BAN: " << diem << " ===" << endl;
+}
 
 struct Point{
     int x, y;
@@ -70,6 +92,12 @@ int main(){
     CONRAN r;
     int Huong = 0;
     char t;
+    //khai bao va chay ham tao thuc an
+    int thucAnX, thucAnY;
+    int diem = 0;
+
+    srand(time (0));
+    khoiTaoThucAn(thucAnX,thucAnY);
 
     while (true){
 
@@ -86,9 +114,24 @@ int main(){
 #else
         system("clear");
 #endif
-
-        r.Ve();
         r.DiChuyen(Huong);
+
+        // kiểm tra ăn mồi
+        if (kiemTraAnMoi(r.A[0].x, r.A[0].y, thucAnX, thucAnY, diem)){
+            r.DoDai++;
+        }
+
+        // vẽ mồi
+        gotoxy(thucAnX, thucAnY);
+        cout << "*";
+
+        // vẽ rắn
+        r.Ve();
+
+        // in điểm
+        gotoxy(0, 0);
+        cout << "Diem: " << diem;
+
 
 #ifdef _WIN32
         Sleep(300);
