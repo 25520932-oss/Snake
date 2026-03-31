@@ -14,26 +14,21 @@
 
 using namespace std;
 
-<<<<<<< HEAD
-//An con tro chuot
+// Ẩn con trỏ
 #ifdef _WIN32
 void AnConTro(){
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursorInfo;
-
     GetConsoleCursorInfo(hOut, &cursorInfo);
-    cursorInfo.bVisible = false;  // Ẩn con trỏ
+    cursorInfo.bVisible = false;
     SetConsoleCursorInfo(hOut, &cursorInfo);
 }
-#endif
-#ifndef _WIN32
+#else
 void AnConTro(){
-    printf("\033[?25l");  // Ẩn cursor
+    printf("\033[?25l");
 }
 #endif
 
-=======
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
 void gotoxy(int column, int line);
 
 #ifndef _WIN32
@@ -41,61 +36,38 @@ int kbhit(void);
 int getch(void);
 #endif
 
-// Hàm tạo tọa độ ngẫu nhiên cho thức ăn
+// ================== THỨC ĂN ==================
 void khoiTaoThucAn(int &thucAnX, int &thucAnY) {
-<<<<<<< HEAD
-    thucAnX = rand() % 39 ;
-    if(thucAnX==0) thucAnX++;
-    thucAnY = rand() % 19 ;
-    if(thucAnY==0) thucAnY++;
-=======
     thucAnX = rand() % 40 + 5;
     thucAnY = rand() % 15 + 5;
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
 }
 
-// Hàm kiểm tra rắn ăn mồi, nếu ăn thì cộng điểm và tạo mồi mới
 bool kiemTraAnMoi(int ranX, int ranY, int &thucAnX, int &thucAnY, int &diem) {
     if (ranX == thucAnX && ranY == thucAnY) {
-        diem += 10; // Cộng 10 điểm
-        khoiTaoThucAn(thucAnX, thucAnY); // Random cục mồi mới
-        return true; // Trả về true báo hiệu đã ăn (để rắn dài ra)
+        diem += 10;
+        khoiTaoThucAn(thucAnX, thucAnY);
+        return true;
     }
-    return false; // Chưa ăn
+    return false;
 }
 
-// Hàm in điểm
-void inDiem(int diem) {
-    cout << "=== DIEM CUA BAN: " << diem << " ===" << endl;
-}
-
-<<<<<<< HEAD
-// Hàm để vẽ khung trò chơi
+// ================== KHUNG ==================
 void VeKhung(){
     for(int i = 0; i < 20; i++) {
-    for(int j = 0; j < 40; j++) {
-
-        // Góc
-        if(i == 0 && j == 0) cout << "o";
-        else if(i == 0 && j == 40 - 1) cout << "o";
-        else if(i == 20 - 1 && j == 0) cout << "o";
-        else if(i == 20 - 1 && j == 40 - 1) cout << "o";
-
-        // Cạnh trên & dưới
-        else if(i == 0 || i == 20 - 1) cout << "-";
-
-        // Cạnh trái & phải
-        else if(j == 0 || j == 40 - 1) cout << "|";
-
-        // Bên trong
-        else cout << " ";
+        for(int j = 0; j < 40; j++) {
+            if(i == 0 && j == 0) cout << "o";
+            else if(i == 0 && j == 39) cout << "o";
+            else if(i == 19 && j == 0) cout << "o";
+            else if(i == 19 && j == 39) cout << "o";
+            else if(i == 0 || i == 19) cout << "-";
+            else if(j == 0 || j == 39) cout << "|";
+            else cout << " ";
+        }
+        cout << endl;
     }
-    cout << endl;
-}
 }
 
-=======
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
+// ================== RẮN ==================
 struct Point{
     int x, y;
 };
@@ -120,6 +92,10 @@ public:
     }
 
     void DiChuyen(int Huong){
+        // FIX: xóa đuôi.
+        gotoxy(A[DoDai - 1].x, A[DoDai - 1].y);
+        cout << " ";
+
         for (int i = DoDai - 1; i > 0; i--){
             A[i] = A[i - 1];
         }
@@ -131,20 +107,23 @@ public:
     }
 };
 
-<<<<<<< HEAD
-//Hàm kiểm tra thua
-bool KiemTraThua(CONRAN r){
-    //Kiểm tra đụng thân
-    for(int i=5;i<r.DoDai;i++){
-        if(r.A[i].x==r.A[0].x&&r.A[i].y==r.A[0].y) return 0;
+// ================== THUA ==================
+bool KiemTraThua(const CONRAN &r){
+    // đụng thân
+    for(int i = 1; i < r.DoDai; i++){
+        if(r.A[i].x == r.A[0].x && r.A[i].y == r.A[0].y)
+            return false;
     }
-    //Kiểm tra đụng tường
-    if(r.A[0].x==0||r.A[0].x==39||r.A[0].y==0||r.A[0].y==19) return 0;
-    return 1;
+
+    // đụng tường
+    if(r.A[0].x == 0 || r.A[0].x == 39 ||
+       r.A[0].y == 0 || r.A[0].y == 19)
+        return false;
+
+    return true;
 }
 
-=======
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
+// ================== GOTOXY ==================
 void gotoxy(int column, int line){
 #ifdef _WIN32
     COORD coord;
@@ -156,119 +135,72 @@ void gotoxy(int column, int line){
 #endif
 }
 
+// ================== MAIN ==================
 int main(){
-<<<<<<< HEAD
+
     AnConTro();
     CONRAN r;
     int Huong = 0;
-    int i=0;//tang toc do game
-=======
-    CONRAN r;
-    int Huong = 0;
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
+    int i = 0;
+
     char t;
-    //khai bao va chay ham tao thuc an
     int thucAnX, thucAnY;
     int diem = 0;
 
-    srand(time (0));
-    khoiTaoThucAn(thucAnX,thucAnY);
+    srand(time(0));
+    khoiTaoThucAn(thucAnX, thucAnY);
 
-<<<<<<< HEAD
     while (KiemTraThua(r)){
 
         if (kbhit()){
             t = getch();
-            if (t == 'a' && Huong != 0) Huong = 2; // tranh dao chieu
+            if (t == 'a' && Huong != 0) Huong = 2;
             if (t == 'w' && Huong != 1) Huong = 3;
             if (t == 'd' && Huong != 2) Huong = 0;
-            if (t == 's' && Huong != 3) Huong = 1; // đổi lại s cho chuẩn WASD
+            if (t == 's' && Huong != 3) Huong = 1;
         }
-        //thay cho clear man hinh
+
         gotoxy(0,0);
-//clear man hinh lam khung bi nhap nhay
-/*#ifdef _WIN32
-        system("cls");
-#else
-        system("clear");
-#endif*/
-=======
-    while (true){
 
-        if (kbhit()){
-            t = getch();
-            if (t == 'a') Huong = 2;
-            if (t == 'w') Huong = 3;
-            if (t == 'd') Huong = 0;
-            if (t == 's') Huong = 1; // đổi lại s cho chuẩn WASD
-        }
-
-#ifdef _WIN32
-        system("cls");
-#else
-        system("clear");
-#endif
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
         r.DiChuyen(Huong);
 
-        // kiểm tra ăn mồi
         if (kiemTraAnMoi(r.A[0].x, r.A[0].y, thucAnX, thucAnY, diem)){
             r.DoDai++;
-<<<<<<< HEAD
-            //Tang toc do
-            #ifdef _WIN32
-            if(i<200)
-            i+=10;
-            #else
-            if(i<200000)
-            i+=10000;
-            #endif // _WIN32
+
+#ifdef _WIN32
+            if(i < 250) i += 10;
+#else
+            if(i < 250000) i += 10000;
+#endif
         }
 
-        // vẽ khung
         VeKhung();
 
-=======
-        }
-
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
-        // vẽ mồi
         gotoxy(thucAnX, thucAnY);
         cout << "*";
 
-        // vẽ rắn
         r.Ve();
 
-        // in điểm
-<<<<<<< HEAD
-        gotoxy(0,21);
-=======
-        gotoxy(0, 0);
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
+        gotoxy(0, 21);
         cout << "Diem: " << diem;
 
-
 #ifdef _WIN32
-<<<<<<< HEAD
-        Sleep(300-i);
+        int delay = 300 - i;
+        if (delay < 50) delay = 50;
+        Sleep(delay);
 #else
-        usleep(300000-i);
+        int delay = 300000 - i;
+        if (delay < 50000) delay = 50000;
+        usleep(delay);
 #endif
     }
-    cout<<"\nGame over";
-=======
-        Sleep(300);
-#else
-        usleep(300000);
-#endif
-    }
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
 
+    cout << "\nGame over";
     return 0;
 }
 
 #ifndef _WIN32
-
+// giữ nguyên phần này
 int kbhit(void){
     struct termios oldt, newt;
     int ch;
@@ -292,7 +224,6 @@ int kbhit(void){
         ungetc(ch, stdin);
         return 1;
     }
-
     return 0;
 }
 
@@ -310,9 +241,4 @@ int getch(void){
     tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
     return ch;
 }
-
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> 07a415a8406920f28206eb7a4324908feb76f706
